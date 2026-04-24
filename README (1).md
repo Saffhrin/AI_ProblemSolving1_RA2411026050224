@@ -131,7 +131,7 @@ fraud_detected                 = FALSE
 ---
 
 ## Author
-
-- **Repository:** `AI_ProblemSolving_`
+- **Contributed by:** X.P.Saffhrin , RA2411026050224
+- **Repository:** `AI_ProblemSolving1_RA2411026050224`
 - **Problem:** Rule-Based Insurance Claim Decision System
 - **Method:** Propositional Logic — Rule-Based Inference (Forward Chaining)
