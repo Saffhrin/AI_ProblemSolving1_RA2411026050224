@@ -1,17 +1,16 @@
 # Rule-Based Insurance Claim Decision System
 
-![Python](https://img.shields.io/badge/Python-3.x-blue) ![Logic](https://img.shields.io/badge/AI-Propositional%20Logic-green) ![Status](https://img.shields.io/badge/Status-Active-brightgreen)
-
 ## Problem Description
 
-An insurance company needs an automated system to evaluate whether a claim should be **approved or rejected** based on predefined logical rules.
+An insurance company needs an automated system to evaluate whether a claim should be **Approved** or **Rejected** based on predefined logical rules.
 
-The system uses **Propositional Logic** with facts such as:
-- Policy validity (`policy_active`)
-- Document verification (`documents_valid`)
-- Accident reporting (`accident_reported`)
-- Premium payment (`premium_paid`)
-- Fraud detection (`fraud_detected`)
+The system uses **Propositional Logic** with the following claim details:
+
+- Is the Policy Active?
+- Are the Documents Valid?
+- Has the Accident been Reported?
+- Has the Premium been Paid?
+- Was any Fraud Detected?
 
 ---
 
@@ -19,14 +18,14 @@ The system uses **Propositional Logic** with facts such as:
 
 ### Rule-Based Inference — Forward Chaining (Propositional Logic)
 
-The system implements **forward chaining**, a data-driven inference method:
+The system uses **forward chaining**, a data-driven inference method:
 
-1. A **Knowledge Base (KB)** is initialized with user-provided facts (True/False)
-2. **Rules** in the form `IF condition(s) THEN outcome` are parsed
-3. The engine iterates over all rules until no new facts can be derived
-4. Rules support `AND` conjunctions and `NOT` negation
-5. Chained inference: derived facts can trigger further rules
-6. Final **decision** is read from the KB: `final_approve`, `approve_claim`, or `reject_claim`
+1. A **Knowledge Base** is initialized with the user-provided claim facts
+2. **Rules** in the form `IF condition THEN outcome` are evaluated
+3. The engine loops through all rules until no new facts can be derived
+4. Rules support **AND** conditions and **NOT** (negation)
+5. Derived facts can trigger further rules (chained reasoning)
+6. A **final decision** is produced — Approved or Rejected
 
 ---
 
@@ -35,17 +34,16 @@ The system implements **forward chaining**, a data-driven inference method:
 ```
 AI_ProblemSolving_/
 ├── README.md
-|── index.html
+|── index.html                       # Interactive web interface
 └── insurance_claim/
-    ├── insurance_claim_system.py   # Main Python program (console)
-    
+    ├── insurance_claim_system.py   # Main Python program (console)       
 ```
 
 ---
 
 ## Execution Steps
 
-### Python (Console)
+### Run the Python Program
 
 ```bash
 # Clone the repository
@@ -56,58 +54,91 @@ cd AI_ProblemSolving_/insurance_claim
 python insurance_claim_system.py
 ```
 
-Then select:
-- `1` → Interactive mode (enter your own facts and rules)
-- `2` → Demo mode (runs the sample input from the problem statement)
+Select a mode when prompted:
 
-### Web Interface
+| Mode | Description |
+|------|-------------|
+| 1 | Interactive — Enter your own facts and rules |
+| 2 | Demo — Runs the built-in sample claim |
+| 3 | Batch — Compares multiple scenarios at once |
+| 4 | Exit |
 
-https://saffhrin.github.io/AI_ProblemSolving1_RA2411026050224/
+### Run the Web Interface
+
+Open `index.html` in any browser — no installation needed.
+
+Or visit the live site:
+```
+
+```
 
 ---
 
 ## Sample Input & Output
 
-### Input Facts
-```
-Policy is active               = TRUE
-Documents are valid            = TRUE
-Accident is Reported           = TRUE
-Premium has been Paid          = FALSE
-Fraud Detected                 = FALSE
-```
+### Claim Facts Provided
 
-### Rules
-```
-IF Policy is active  AND Documents are valid THEN Approve the Claim
-IF Accident is Reported AND NOT Fraud Detected THEN Accident is Valid
-IF  Accident is Valid AND Approve the Claim THEN Final Approval Granted
-IF Fraud Detected THEN Reject the Claim
-IF NOT Premium has been Paid THEN Reject the Claim
-IF NOT Policy is active THEN Reject the Claim
-```
+| Fact | Value |
+|------|-------|
+| Policy is Active | Yes |
+| Documents are Valid | Yes |
+| Accident is Reported | Yes |
+| Premium has been Paid | No |
+| Fraud Detected | No |
+
+### Rules Applied
+
+| Rule | Description |
+|------|-------------|
+| Rule 1 | IF Policy is Active AND Documents are Valid → Approve the Claim |
+| Rule 2 | IF Accident is Reported AND NOT Fraud Detected → Accident is Valid |
+| Rule 3 | IF Accident is Valid AND Approve the Claim → Final Approval Granted |
+| Rule 4 | IF Fraud Detected → Reject the Claim |
+| Rule 5 | IF NOT Premium has been Paid → Reject the Claim |
+| Rule 6 | IF NOT Policy is Active → Reject the Claim |
 
 ### Output
+
 ```
-[INPUT FACTS]
-Policy is active               = TRUE
-Documents are valid            = TRUE
-Accident is Reported           = TRUE
-Premium has been Paid          = FALSE
-Fraud Detected                 = FALSE
+─────────────────────────────────────────────────────────────────
+  EVALUATION REPORT
+─────────────────────────────────────────────────────────────────
 
-[INFERENCE TRACE]
-  [FIRED] Rule 1: Policy is active AND Documents are valid  → Approve the Claim
-  [FIRED] Rule 2: Accident is Reported AND NOT Fraud Detected → Accident is Valid 
-  [FIRED] Rule 3: Accident is Valid  AND Approve the Claim →  Final Approval Granted
-  [FIRED] Rule 5: NOT Premium has been Paid  → Reject the Claim
+INPUT FACTS:
+  Policy is Active                     =  YES / TRUE
+  Documents are Valid                  =  YES / TRUE
+  Accident is Reported                 =  YES / TRUE
+  Premium has been Paid                =  NO  / FALSE
+  Fraud Detected                       =  NO  / FALSE
 
-==============================
-  DECISION: CLAIM REJECTED
-==============================
+INFERENCE TRACE (How Decision Was Made):
+  ✔ Rule 1 fired: Policy is Active AND Documents are Valid
+                  → Approve the Claim = TRUE
+  ✔ Rule 2 fired: Accident is Reported AND NOT Fraud Detected
+                  → Accident is Valid = TRUE
+  ✔ Rule 3 fired: Accident is Valid AND Approve the Claim
+                  → Final Approval Granted = TRUE
+  ✔ Rule 5 fired: NOT Premium has been Paid
+                  → Reject the Claim = TRUE
+
+═══════════════════════════════════════════════════════════════════
+  FINAL DECISION :  ✘  CLAIM REJECTED
+  One or more rejection conditions were triggered.
+═══════════════════════════════════════════════════════════════════
 ```
 
-> reject_claim fires because premium was not paid — rejection takes precedence.
+> **Note:** Even though approval conditions were met, the claim is **rejected** because the premium was not paid. Rejection always takes priority.
+
+---
+
+## Web Interface Features
+
+- Toggle each fact as **Yes** or **No** with a single click
+- Add or remove facts and rules dynamically
+- Rules displayed in plain English (not code)
+- Dropdown menus to build new rules — no typing needed
+- Live inference trace showing exactly how the decision was reached
+- Derived facts shown separately from input facts
 
 ---
 
@@ -115,19 +146,31 @@ Fraud Detected                 = FALSE
 
 | Component | Technology |
 |-----------|------------|
-| Core logic | Python 3.x |
-| Web UI | HTML + CSS + Vanilla JavaScript |
-| Inference method | Forward Chaining (Propositional Logic) |
-| Rule syntax | `IF cond1 AND NOT cond2 THEN outcome` |
+| Core Logic | Python 3.x |
+| Web Interface | HTML + CSS + JavaScript |
+| Inference Method | Forward Chaining (Propositional Logic) |
+| Rule Format | IF condition AND NOT condition THEN outcome |
 
 ---
 
 ## Key Design Decisions
 
-- **Forward chaining** was chosen because we start from known facts and derive conclusions — the natural direction for claim evaluation
-- **NOT support** enables rules like `IF NOT fraud_detected THEN ...` for nuanced logic
-- **Chained inference** allows multi-step reasoning (e.g., `accident_valid` triggers `final_approve`)
-- **Reject priority**: if `reject_claim` is derived at any point, the claim is rejected
+- **Forward chaining** was chosen because the system starts from known facts and derives conclusions — the natural direction for claim evaluation
+- **NOT support** allows rules like "If premium is NOT paid → Reject" for nuanced logic
+- **Chained inference** enables multi-step reasoning — derived facts trigger further rules
+- **Rejection takes priority** — if any rejection condition is triggered, the claim is rejected regardless of approval conditions
+- **Human-readable UI** — all facts and rules are shown in plain English, not code
+
+---
+
+## Batch Mode — Scenario Comparison
+
+| Scenario | Policy Active | Documents Valid | Premium Paid | Fraud Detected | Decision |
+|----------|:---:|:---:|:---:|:---:|:---:|
+| Full Approval | ✔ | ✔ | ✔ | ✘ | ✔ Approved |
+| Fraud Detected | ✔ | ✔ | ✔ | ✔ | ✘ Rejected |
+| Premium Not Paid | ✔ | ✔ | ✘ | ✘ | ✘ Rejected |
+| Policy Inactive | ✘ | ✔ | ✔ | ✘ | ✘ Rejected |
 
 ---
 
