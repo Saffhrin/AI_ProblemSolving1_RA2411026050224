@@ -35,9 +35,10 @@ The system implements **forward chaining**, a data-driven inference method:
 ```
 AI_ProblemSolving_/
 ├── README.md
+|── index.html
 └── insurance_claim/
     ├── insurance_claim_system.py   # Main Python program (console)
-    └── index.html                  # Interactive web interface
+    
 ```
 
 ---
