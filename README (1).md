@@ -1,4 +1,4 @@
-# AI_ProblemSolving_ — Rule-Based Insurance Claim Decision System
+# Rule-Based Insurance Claim Decision System
 
 ![Python](https://img.shields.io/badge/Python-3.x-blue) ![Logic](https://img.shields.io/badge/AI-Propositional%20Logic-green) ![Status](https://img.shields.io/badge/Status-Active-brightgreen)
 
