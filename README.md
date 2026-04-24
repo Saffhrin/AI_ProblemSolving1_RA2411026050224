@@ -69,10 +69,9 @@ Open `index.html` in any browser — no installation needed.
 
 Or visit the live site:
 ```
- https://saffhrin.github.io/AI_ProblemSolving1_RA2411026050224/
-```
-
----
+ 
+[🌐 Click here to open the Insurance Claim Decision System](https://saffhrin.github.io/AI_ProblemSolving1_RA2411026050224/)
+ 
 
 ## Sample Input & Output
 
