@@ -1,4 +1,4 @@
-# Rule-Based Insurance Claim Decision System
+# AI_ProblemSolving_ — Rule-Based Insurance Claim Decision System
 
 ## Problem Description
 
@@ -34,9 +34,9 @@ The system uses **forward chaining**, a data-driven inference method:
 ```
 AI_ProblemSolving_/
 ├── README.md
-|── index.html                       # Interactive web interface
+|── index.html
 └── insurance_claim/
-    ├── insurance_claim_system.py   # Main Python program (console)       
+    ├── insurance_claim_system.py   # Main Python program (console)
 ```
 
 ---
@@ -68,10 +68,10 @@ Select a mode when prompted:
 Open `index.html` in any browser — no installation needed.
 
 Or visit the live site:
-```
- 
+
 [🌐 Click here to open the Insurance Claim Decision System](https://saffhrin.github.io/AI_ProblemSolving1_RA2411026050224/)
- 
+
+---
 
 ## Sample Input & Output
 
@@ -174,7 +174,7 @@ INFERENCE TRACE (How Decision Was Made):
 ---
 
 ## Author
-- **Contributed by:** X.P.Saffhrin , RA2411026050224
-- **Repository:** AI_ProblemSolving1_RA2411026050224
+
+- **Repository:** AI_ProblemSolving_
 - **Problem:** Rule-Based Insurance Claim Decision System
 - **Method:** Propositional Logic — Rule-Based Inference (Forward Chaining)
