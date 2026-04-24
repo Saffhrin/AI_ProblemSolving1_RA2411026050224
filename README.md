@@ -1,4 +1,4 @@
-# AI_ProblemSolving_ — Rule-Based Insurance Claim Decision System
+# Rule-Based Insurance Claim Decision System
 
 ## Problem Description
 
@@ -69,7 +69,7 @@ Open `index.html` in any browser — no installation needed.
 
 Or visit the live site:
 
-[🌐 Click here to open the Insurance Claim Decision System](https://saffhrin.github.io/AI_ProblemSolving1_RA2411026050224/)
+https://saffhrin.github.io/AI_ProblemSolving1_RA2411026050224/
 
 ---
 
@@ -174,7 +174,7 @@ INFERENCE TRACE (How Decision Was Made):
 ---
 
 ## Author
-
+- **Contributed by:** X.P.Saffhrin , RA2411026050224
 - **Repository:** AI_ProblemSolving_
 - **Problem:** Rule-Based Insurance Claim Decision System
 - **Method:** Propositional Logic — Rule-Based Inference (Forward Chaining)
