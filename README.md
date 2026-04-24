@@ -70,37 +70,37 @@ https://saffhrin.github.io/AI_ProblemSolving1_RA2411026050224/
 
 ### Input Facts
 ```
-policy_active      = True
-documents_valid    = True
-accident_reported  = True
-premium_paid       = False
-fraud_detected     = False
+Policy is active               = TRUE
+Documents are valid            = TRUE
+Accident is Reported           = TRUE
+Premium has been Paid          = FALSE
+Fraud Detected                 = FALSE
 ```
 
 ### Rules
 ```
-IF policy_active AND documents_valid THEN approve_claim
-IF accident_reported AND NOT fraud_detected THEN accident_valid
-IF accident_valid AND approve_claim THEN final_approve
-IF fraud_detected THEN reject_claim
-IF NOT premium_paid THEN reject_claim
-IF NOT policy_active THEN reject_claim
+IF Policy is active  AND Documents are valid THEN Approve the Claim
+IF Accident is Reported AND NOT Fraud Detected THEN Accident is Valid
+IF  Accident is Valid AND Approve the Claim THEN Final Approval Granted
+IF Fraud Detected THEN Reject the Claim
+IF NOT Premium has been Paid THEN Reject the Claim
+IF NOT Policy is active THEN Reject the Claim
 ```
 
 ### Output
 ```
 [INPUT FACTS]
-policy_active                  = TRUE
-documents_valid                = TRUE
-accident_reported              = TRUE
-premium_paid                   = FALSE
-fraud_detected                 = FALSE
+Policy is active               = TRUE
+Documents are valid            = TRUE
+Accident is Reported           = TRUE
+Premium has been Paid          = FALSE
+Fraud Detected                 = FALSE
 
 [INFERENCE TRACE]
-  [FIRED] Rule 1: policy_active AND documents_valid → approve_claim = TRUE
-  [FIRED] Rule 2: accident_reported AND NOT fraud_detected → accident_valid = TRUE
-  [FIRED] Rule 3: accident_valid AND approve_claim → final_approve = TRUE
-  [FIRED] Rule 5: NOT premium_paid → reject_claim = TRUE
+  [FIRED] Rule 1: Policy is active AND Documents are valid  → Approve the Claim
+  [FIRED] Rule 2: Accident is Reported AND NOT Fraud Detected → Accident is Valid 
+  [FIRED] Rule 3: Accident is Valid  AND Approve the Claim →  Final Approval Granted
+  [FIRED] Rule 5: NOT Premium has been Paid  → Reject the Claim
 
 ==============================
   DECISION: CLAIM REJECTED
