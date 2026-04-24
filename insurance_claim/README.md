@@ -61,7 +61,7 @@ Then select:
 
 ### Web Interface
 
-Just open `index.html` in any modern browser — no server or installation needed.
+https://saffhrin.github.io/AI_ProblemSolving1_RA2411026050224/
 
 ---
 
