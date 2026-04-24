@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Insurance Claim Decision System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --navy:#0f1b2d;--navy2:#162236;--navy3:#1e2f45;--navy4:#243550;
+      --gold:#c9a84c;--gold2:#e8c76a;--gold-dim:rgba(201,168,76,0.12);--gold-border:rgba(201,168,76,0.28);
+      --white:#f5f0e8;--white2:#ede7d9;--muted:#8a9bb5;--muted2:#5a6f8a;
+      --success:#4caf87;--success-bg:rgba(76,175,135,0.12);--success-br:rgba(76,175,135,0.3);
+      --danger:#e05c5c;--danger-bg:rgba(224,92,92,0.12);--danger-br:rgba(224,92,92,0.3);
+      --warn:#e0a84c;--warn-bg:rgba(224,168,76,0.12);
+      --info:#5c9fe0;--info-bg:rgba(92,159,224,0.12);--info-br:rgba(92,159,224,0.3);
+      --r:12px;--rs:8px;
+    }
+    html{scroll-behavior:smooth;}
+    body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;overflow-x:hidden;}
+    body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 15% 10%,rgba(201,168,76,0.07) 0%,transparent 55%),radial-gradient(ellipse 60% 40% at 85% 85%,rgba(92,159,224,0.05) 0%,transparent 55%);pointer-events:none;z-index:0;}
+    .page{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem 4rem;}
+
+    /* Header */
+    .hdr{text-align:center;margin-bottom:2.5rem;animation:fadeD .7s ease both;}
+    .hdr-tag{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:99px;padding:6px 18px;margin-bottom:1.1rem;}
+    .hdr-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite;}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.65);}}
+    .hdr h1{font-family:'Playfair Display',serif;font-size:clamp(26px,4.5vw,44px);font-weight:700;color:var(--white);line-height:1.15;margin-bottom:.6rem;}
+    .hdr h1 em{color:var(--gold);font-style:normal;}
+    .hdr p{font-size:14px;color:var(--muted);max-width:460px;margin:0 auto;line-height:1.75;}
+
+    /* Stats */
+    .stats{display:flex;justify-content:center;gap:2rem;margin-bottom:2rem;animation:fadeD .7s ease .1s both;}
+    .stat{text-align:center;}
+    .sn{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold);display:block;}
+    .sl{font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;}
+    .ssep{width:1px;background:rgba(255,255,255,.07);align-self:stretch;}
+
+    /* Grid */
+    .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;animation:fadeU .7s ease .15s both;}
+    @media(max-width:740px){.grid{grid-template-columns:1fr;}}
+
+    /* Panel */
+    .panel{background:var(--navy2);border:1px solid rgba(255,255,255,.07);border-radius:var(--r);overflow:hidden;}
+    .ph{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.4rem;border-bottom:1px solid rgba(255,255,255,.06);background:var(--navy3);}
+    .pt{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--white);letter-spacing:.02em;}
+    .pico{width:28px;height:28px;border-radius:var(--rs);background:var(--gold-dim);border:1px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-size:13px;}
+    .pb{padding:1.4rem;}
+
+    /* Section label */
+    .sl2{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.55rem;margin-top:1.3rem;display:flex;align-items:center;gap:8px;}
+    .sl2:first-child{margin-top:0;}
+    .sl2::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.05);}
+
+    /* Fact row */
+    .frow{display:flex;align-items:center;justify-content:space-between;padding:.55rem .85rem;background:var(--navy3);border:1px solid rgba(255,255,255,.06);border-radius:var(--rs);margin-bottom:6px;transition:border-color .2s,background .2s;}
+    .frow:hover{border-color:rgba(255,255,255,.13);background:var(--navy4);}
+    .fname{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--white2);}
+    .tg{display:flex;gap:4px;align-items:center;}
+    .tb{font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:600;padding:4px 11px;border-radius:6px;border:1px solid rgba(255,255,255,.1);cursor:pointer;background:var(--navy4);color:var(--muted);transition:all .15s;}
+    .tb:hover{border-color:rgba(255,255,255,.2);}
+    .tb.ot{background:var(--success-bg);color:var(--success);border-color:var(--success-br);}
+    .tb.of{background:var(--danger-bg);color:var(--danger);border-color:var(--danger-br);}
+    .xb{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:16px;padding:0 4px;transition:color .15s;margin-left:4px;line-height:1;}
+    .xb:hover{color:var(--danger);}
+
+    /* Input */
+    .irow{display:flex;gap:8px;margin-top:8px;}
+    input[type=text]{flex:1;font-family:'IBM Plex Mono',monospace;font-size:12px;padding:9px 12px;border:1px solid rgba(255,255,255,.1);border-radius:var(--rs);background:var(--navy3);color:var(--white);outline:none;transition:border-color .2s;}
+    input[type=text]:focus{border-color:var(--gold);background:var(--navy4);}
+    input[type=text]::placeholder{color:var(--muted2);}
+    .btn{font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:600;padding:9px 15px;border-radius:var(--rs);border:1px solid rgba(255,255,255,.1);cursor:pointer;background:var(--navy4);color:var(--white2);transition:all .15s;white-space:nowrap;}
+    .btn:hover{border-color:var(--gold-border);background:var(--gold-dim);color:var(--gold2);}
+    .btn:active{transform:scale(.97);}
+
+    /* Rule card */
+    .rcard{border:1px solid rgba(255,255,255,.06);border-radius:var(--rs);background:var(--navy3);margin-bottom:6px;overflow:hidden;transition:border-color .2s;}
+    .rcard:hover{border-color:rgba(255,255,255,.12);}
+    .rh{display:flex;align-items:center;padding:.5rem .85rem;cursor:pointer;gap:8px;}
+    .rnum{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted2);flex-shrink:0;min-width:16px;}
+    .rtxt{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .rbadge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;flex-shrink:0;letter-spacing:.06em;}
+    .rba{background:var(--success-bg);color:var(--success);border:1px solid var(--success-br);}
+    .rbr{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-br);}
+    .rbo{background:var(--info-bg);color:var(--info);border:1px solid var(--info-br);}
+    .redit{display:none;padding:0 .85rem .6rem;}
+    .redit.open{display:block;}
+    textarea{width:100%;font-family:'IBM Plex Mono',monospace;font-size:11px;padding:7px 10px;border:1px solid rgba(255,255,255,.1);border-radius:var(--rs);background:var(--navy);color:var(--white2);resize:none;outline:none;line-height:1.6;}
+    textarea:focus{border-color:var(--gold);}
+
+    /* Eval btn */
+    .ebtn{width:100%;margin-top:1.4rem;padding:13px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;background:linear-gradient(135deg,#d4a94e 0%,#a8742d 100%);color:var(--navy);border:none;border-radius:var(--rs);cursor:pointer;letter-spacing:.03em;transition:opacity .2s,transform .1s,box-shadow .2s;box-shadow:0 4px 22px rgba(201,168,76,.28);position:relative;overflow:hidden;}
+    .ebtn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.18) 0%,transparent 55%);}
+    .ebtn:hover{opacity:.9;box-shadow:0 6px 30px rgba(201,168,76,.42);}
+    .ebtn:active{transform:scale(.98);}
+
+    .rstbtn{font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:600;padding:5px 13px;background:none;border:1px solid rgba(255,255,255,.1);border-radius:6px;color:var(--muted);cursor:pointer;transition:all .15s;}
+    .rstbtn:hover{border-color:var(--danger-br);color:var(--danger);}
+
+    /* Output */
+    .empty{color:var(--muted2);font-size:13px;text-align:center;padding:3.5rem 1rem;line-height:1.85;}
+    .eico{font-size:40px;display:block;margin-bottom:1rem;opacity:.35;}
+
+    /* Verdict */
+    .verdict{border-radius:var(--rs);padding:1.2rem 1.25rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:14px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1) both;}
+    .va{background:var(--success-bg);border:1px solid var(--success-br);}
+    .vr{background:var(--danger-bg);border:1px solid var(--danger-br);}
+    .vn{background:var(--warn-bg);border:1px solid rgba(224,168,76,.3);}
+    .vico{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;flex-shrink:0;}
+    .va .vico{background:rgba(76,175,135,.2);color:var(--success);}
+    .vr .vico{background:rgba(224,92,92,.2);color:var(--danger);}
+    .vn .vico{background:var(--warn-bg);color:var(--warn);}
+    .vlbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.7;margin-bottom:2px;}
+    .va .vlbl{color:var(--success);}
+    .vr .vlbl{color:var(--danger);}
+    .vn .vlbl{color:var(--warn);}
+    .vdec{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;}
+    .va .vdec{color:var(--success);}
+    .vr .vdec{color:var(--danger);}
+    .vn .vdec{color:var(--warn);}
+
+    /* Pills */
+    .pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1rem;}
+    .pill{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:3px 10px;border-radius:99px;border:1px solid;}
+    .pt2{background:var(--success-bg);color:var(--success);border-color:var(--success-br);}
+    .pf2{background:var(--danger-bg);color:var(--danger);border-color:var(--danger-br);}
+    .pd2{background:var(--info-bg);color:var(--info);border-color:var(--info-br);}
+
+    /* Trace */
+    .tbox{background:var(--navy);border:1px solid rgba(255,255,255,.06);border-radius:var(--rs);padding:.75rem;margin-bottom:1rem;}
+    .ti{display:flex;align-items:flex-start;gap:9px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);line-height:1.5;}
+    .ti:last-child{border-bottom:none;}
+    .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+    .dh{background:var(--success);box-shadow:0 0 7px rgba(76,175,135,.55);}
+    .di{background:var(--muted2);}
+
+    /* Help note */
+    .hnote{font-size:11px;color:var(--muted2);margin-top:6px;line-height:1.6;padding:8px 10px;background:var(--navy);border-radius:6px;border:1px solid rgba(255,255,255,.05);font-family:'IBM Plex Mono',monospace;}
+
+    /* Footer */
+    .footer{text-align:center;margin-top:2.5rem;font-size:12px;color:var(--muted2);animation:fadeU .7s ease .3s both;display:flex;align-items:center;justify-content:center;gap:10px;}
+    .fsep{opacity:.25;}
+
+    @keyframes fadeD{from{opacity:0;transform:translateY(-14px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes fadeU{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes popIn{from{opacity:0;transform:scale(.92);}to{opacity:1;transform:scale(1);}}
+    ::-webkit-scrollbar{width:5px;}
+    ::-webkit-scrollbar-track{background:var(--navy);}
+    ::-webkit-scrollbar-thumb{background:var(--navy4);border-radius:99px;}
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="hdr">
+    <div class="hdr-tag">Propositional Logic · Forward Chaining</div>
+    <h1>Insurance Claim<br><em>Decision System</em></h1>
+    <p>A rule-based AI inference engine that evaluates insurance claims using logical conditions and automated reasoning.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><span class="sn" id="sf">5</span><span class="sl">Facts</span></div>
+    <div class="ssep"></div>
+    <div class="stat"><span class="sn" id="sr">6</span><span class="sl">Rules</span></div>
+    <div class="ssep"></div>
+    <div class="stat"><span class="sn" id="sd">—</span><span class="sl">Decision</span></div>
+  </div>
+
+  <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
+    <button class="rstbtn" onclick="resetAll()">↺ Reset defaults</button>
+  </div>
+
+  <div class="grid">
+
+    <!-- LEFT -->
+    <div class="panel">
+      <div class="ph">
+        <div class="pt"><span class="pico">📋</span>Facts &amp; Inference Rules</div>
+      </div>
+      <div class="pb">
+        <div class="sl2">Claim Facts</div>
+        <div id="facts-list"></div>
+        <div class="irow">
+          <input type="text" id="nf" placeholder="e.g. theft_case" />
+          <button class="btn" onclick="addFact()">+ Add Fact</button>
+        </div>
+
+        <div class="sl2" style="margin-top:1.4rem;">Inference Rules</div>
+        <div class="hnote">IF condition AND NOT condition THEN outcome</div>
+        <div id="rules-list" style="margin-top:8px;"></div>
+        <div class="irow">
+          <input type="text" id="nr" placeholder="IF policy_active AND documents_valid THEN approve_claim" />
+        </div>
+        <div class="irow"><button class="btn" style="width:100%;" onclick="addRule()">+ Add Rule</button></div>
+        <button class="ebtn" onclick="runInference()">⚡ Evaluate Claim</button>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="panel">
+      <div class="ph">
+        <div class="pt"><span class="pico">📊</span>Decision Output</div>
+      </div>
+      <div class="pb">
+        <div id="out">
+          <div class="empty">
+            <span class="eico">⚖️</span>
+            Configure facts and rules on the left,<br>then click <strong>Evaluate Claim</strong>.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <span>AI_ProblemSolving_</span><span class="fsep">·</span>
+    <span>Rule-Based Insurance Claim Decision System</span><span class="fsep">·</span>
+    <span>Propositional Logic</span>
+  </div>
+</div>
+
+<script>
+const DF=[
+  {name:"policy_active",value:true},
+  {name:"documents_valid",value:true},
+  {name:"accident_reported",value:true},
+  {name:"premium_paid",value:false},
+  {name:"fraud_detected",value:false},
+];
+const DR=[
+  "IF policy_active AND documents_valid THEN approve_claim",
+  "IF accident_reported AND NOT fraud_detected THEN accident_valid",
+  "IF accident_valid AND approve_claim THEN final_approve",
+  "IF fraud_detected THEN reject_claim",
+  "IF NOT premium_paid THEN reject_claim",
+  "IF NOT policy_active THEN reject_claim",
+];
+let facts=DF.map(f=>({...f}));
+let rules=[...DR];
+
+function upd(){document.getElementById('sf').textContent=facts.length;document.getElementById('sr').textContent=rules.length;}
+
+function renderFacts(){
+  const el=document.getElementById('facts-list');el.innerHTML='';
+  facts.forEach((f,i)=>{
+    const d=document.createElement('div');d.className='frow';
+    d.innerHTML=`<span class="fname">${f.name}</span><div class="tg">
+      <button class="tb ${f.value?'ot':''}" onclick="sf2(${i},true)">True</button>
+      <button class="tb ${!f.value?'of':''}" onclick="sf2(${i},false)">False</button>
+      <button class="xb" onclick="df(${i})">×</button></div>`;
+    el.appendChild(d);
+  });upd();
+}
+
+function renderRules(){
+  const el=document.getElementById('rules-list');el.innerHTML='';
+  rules.forEach((r,i)=>{
+    const p=pr(r);let cls='rbo',lbl='RULE';
+    if(p){
+      if(p.o.includes('reject')){cls='rbr';lbl='REJECT';}
+      else if(p.o.includes('approve')||p.o.includes('final')){cls='rba';lbl='APPROVE';}
+      else{lbl=p.o.replace(/_/g,' ').toUpperCase().slice(0,10);}
+    }
+    const d=document.createElement('div');d.className='rcard';
+    d.innerHTML=`<div class="rh" onclick="te(${i})">
+      <span class="rnum">${i+1}</span>
+      <span class="rtxt">${r}</span>
+      <span class="rbadge ${cls}">${lbl}</span>
+      <button class="xb" onclick="event.stopPropagation();dr(${i})">×</button></div>
+      <div class="redit" id="re${i}"><textarea rows="2" onchange="ur(${i},this.value)">${r}</textarea></div>`;
+    el.appendChild(d);
+  });upd();
+}
+
+function te(i){document.getElementById('re'+i).classList.toggle('open');}
+function pr(s){
+  const m=s.match(/^IF\s+(.+?)\s+THEN\s+(.+)$/i);if(!m)return null;
+  const o=m[2].trim().toLowerCase().replace(/\s+/g,'_');
+  const c=m[1].split(/\s+AND\s+/i).map(p=>{
+    p=p.trim();const neg=/^NOT\s+/i.test(p);
+    return{name:p.replace(/^NOT\s+/i,'').trim().toLowerCase().replace(/\s+/g,'_'),negated:neg};
+  });
+  return{c,o};
+}
+function sf2(i,v){facts[i].value=v;renderFacts();}
+function df(i){facts.splice(i,1);renderFacts();}
+function dr(i){rules.splice(i,1);renderRules();}
+function ur(i,v){rules[i]=v.trim();}
+function flash(el){el.style.borderColor='var(--danger)';setTimeout(()=>el.style.borderColor='',700);}
+
+function addFact(){
+  const inp=document.getElementById('nf');
+  const name=inp.value.trim().toLowerCase().replace(/\s+/g,'_');
+  if(!name||facts.find(f=>f.name===name)){flash(inp);return;}
+  facts.push({name,value:false});inp.value='';renderFacts();
+}
+function addRule(){
+  const inp=document.getElementById('nr');
+  const val=inp.value.trim();
+  if(!val||!pr(val)){flash(inp);return;}
+  rules.push(val);inp.value='';renderRules();
+}
+
+function runInference(){
+  const kb={};
+  facts.forEach(f=>{kb[f.name]=f.value;});
+  const trace=[];let changed=true,it=0;
+  while(changed&&it<20){changed=false;it++;
+    rules.forEach((rs,idx)=>{
+      const p=pr(rs);if(!p)return;
+      if(kb[p.o]===true)return;
+      const ok=p.c.every(c=>c.negated?!kb[c.name]:!!kb[c.name]);
+      if(ok){kb[p.o]=true;changed=true;
+        const cs=p.c.map(c=>(c.negated?'NOT ':'')+c.name).join(' AND ');
+        trace.push({h:true,m:`Rule ${idx+1}: ${cs} → ${p.o} = TRUE`});
+      }
+    });
+  }
+  const rej=kb['reject_claim'],app=kb['final_approve']||kb['approve_claim'];
+  let vc,vi,vl,vd,vs;
+  if(rej){vc='vr';vi='✕';vl='Decision';vd='Claim Rejected';vs='Rejected';}
+  else if(app){vc='va';vi='✓';vl='Decision';vd='Claim Approved';vs='Approved';}
+  else{vc='vn';vi='?';vl='Decision';vd='No Decision Reached';vs='Pending';}
+  document.getElementById('sd').textContent=vs;
+
+  const fp=facts.map(f=>`<span class="pill ${f.value?'pt2':'pf2'}">${f.name} = ${f.value}</span>`).join('');
+  const dv=Object.entries(kb).filter(([k,v])=>v&&!facts.find(f=>f.name===k)).map(([k])=>`<span class="pill pd2">${k} = TRUE</span>`).join('');
+  const th=trace.length?trace.map(t=>`<div class="ti"><span class="dot ${t.h?'dh':'di'}"></span><span>${t.m}</span></div>`).join('')
+    :`<div class="ti"><span class="dot di"></span><span>No rules fired.</span></div>`;
+  const rh=rules.map((r,i)=>`<div class="ti"><span class="dot di"></span><span>${i+1}. ${r}</span></div>`).join('');
+
+  document.getElementById('out').innerHTML=`
+    <div class="verdict ${vc}">
+      <div class="vico">${vi}</div>
+      <div><div class="vlbl">${vl}</div><div class="vdec">${vd}</div></div>
+    </div>
+    <div class="sl2" style="margin-top:0;">Input Facts</div>
+    <div class="pills">${fp}</div>
+    ${dv?`<div class="sl2">Derived Facts</div><div class="pills">${dv}</div>`:''}
+    <div class="sl2">Inference Trace</div>
+    <div class="tbox">${th}</div>
+    <div class="sl2">Rules Evaluated</div>
+    <div class="tbox">${rh}</div>`;
+}
+
+function resetAll(){
+  facts=DF.map(f=>({...f}));rules=[...DR];
+  renderFacts();renderRules();
+  document.getElementById('sd').textContent='—';
+  document.getElementById('out').innerHTML=`<div class="empty"><span class="eico">⚖️</span>Configure facts and rules on the left,<br>then click <strong>Evaluate Claim</strong>.</div>`;
+}
+
+document.getElementById('nf').addEventListener('keydown',e=>{if(e.key==='Enter')addFact();});
+document.getElementById('nr').addEventListener('keydown',e=>{if(e.key==='Enter')addRule();});
+renderFacts();renderRules();
+</script>
+</body>
+</html>
