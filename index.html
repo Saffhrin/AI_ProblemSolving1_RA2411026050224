@@ -4,210 +4,390 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Insurance Claim Decision System</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    :root{
-      --navy:#0f1b2d;--navy2:#162236;--navy3:#1e2f45;--navy4:#243550;
-      --gold:#c9a84c;--gold2:#e8c76a;--gold-dim:rgba(201,168,76,0.12);--gold-border:rgba(201,168,76,0.28);
-      --white:#f5f0e8;--white2:#ede7d9;--muted:#8a9bb5;--muted2:#5a6f8a;
-      --success:#4caf87;--success-bg:rgba(76,175,135,0.12);--success-br:rgba(76,175,135,0.3);
-      --danger:#e05c5c;--danger-bg:rgba(224,92,92,0.12);--danger-br:rgba(224,92,92,0.3);
-      --warn:#e0a84c;--warn-bg:rgba(224,168,76,0.12);
-      --info:#5c9fe0;--info-bg:rgba(92,159,224,0.12);--info-br:rgba(92,159,224,0.3);
-      --r:12px;--rs:8px;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:  #0f1b2d;
+      --navy2: #162236;
+      --navy3: #1e2f45;
+      --navy4: #243550;
+      --gold:  #c9a84c;
+      --gold2: #e8c76a;
+      --gold-dim:    rgba(201,168,76,0.12);
+      --gold-border: rgba(201,168,76,0.28);
+      --white:  #f5f0e8;
+      --white2: #ede7d9;
+      --muted:  #8a9bb5;
+      --muted2: #5a6f8a;
+      --success: #4caf87;
+      --s-bg: rgba(76,175,135,0.13);
+      --s-br: rgba(76,175,135,0.32);
+      --danger:  #e05c5c;
+      --d-bg: rgba(224,92,92,0.13);
+      --d-br: rgba(224,92,92,0.32);
+      --warn:  #e0a84c;
+      --w-bg: rgba(224,168,76,0.13);
+      --w-br: rgba(224,168,76,0.32);
+      --info:  #5c9fe0;
+      --i-bg: rgba(92,159,224,0.13);
+      --i-br: rgba(92,159,224,0.32);
+      --r: 12px; --rs: 8px;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
     }
-    html{scroll-behavior:smooth;}
-    body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;overflow-x:hidden;}
-    body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 15% 10%,rgba(201,168,76,0.07) 0%,transparent 55%),radial-gradient(ellipse 60% 40% at 85% 85%,rgba(92,159,224,0.05) 0%,transparent 55%);pointer-events:none;z-index:0;}
-    .page{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem 4rem;}
+
+    body { font-family: var(--font); background: var(--navy); color: var(--white); min-height: 100vh; }
+
+    body::before {
+      content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+      background:
+        radial-gradient(ellipse 70% 45% at 15% 10%, rgba(201,168,76,0.07) 0%, transparent 55%),
+        radial-gradient(ellipse 55% 35% at 85% 85%, rgba(92,159,224,0.05) 0%, transparent 55%);
+    }
+
+    .page { position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:2rem 1.25rem 3.5rem; }
 
     /* Header */
-    .hdr{text-align:center;margin-bottom:2.5rem;animation:fadeD .7s ease both;}
-    .hdr-tag{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:99px;padding:6px 18px;margin-bottom:1.1rem;}
-    .hdr-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite;}
-    @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.65);}}
-    .hdr h1{font-family:'Playfair Display',serif;font-size:clamp(26px,4.5vw,44px);font-weight:700;color:var(--white);line-height:1.15;margin-bottom:.6rem;}
-    .hdr h1 em{color:var(--gold);font-style:normal;}
-    .hdr p{font-size:14px;color:var(--muted);max-width:460px;margin:0 auto;line-height:1.75;}
+    .hdr { text-align:center; margin-bottom:2rem; }
+    .badge {
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+      color:var(--gold); background:var(--gold-dim);
+      border:1px solid var(--gold-border); border-radius:99px;
+      padding:5px 16px; margin-bottom:1rem;
+    }
+    .badge-dot { width:6px; height:6px; border-radius:50%; background:var(--gold); animation:pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.3;} }
+    .hdr h1 { font-size:clamp(24px,4vw,40px); font-weight:800; line-height:1.2; color:var(--white); margin-bottom:.5rem; }
+    .hdr h1 span { color:var(--gold); }
+    .hdr p { font-size:14px; color:var(--muted); max-width:460px; margin:0 auto; line-height:1.75; }
 
     /* Stats */
-    .stats{display:flex;justify-content:center;gap:2rem;margin-bottom:2rem;animation:fadeD .7s ease .1s both;}
-    .stat{text-align:center;}
-    .sn{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold);display:block;}
-    .sl{font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;}
-    .ssep{width:1px;background:rgba(255,255,255,.07);align-self:stretch;}
+    .stats { display:flex; justify-content:center; align-items:center; gap:2rem; margin-bottom:1.75rem; }
+    .stat { text-align:center; }
+    .stat-n { font-size:26px; font-weight:800; color:var(--gold); display:block; }
+    .stat-l { font-size:10px; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; }
+    .stat-sep { width:1px; height:36px; background:rgba(255,255,255,.08); }
+
+    /* Topbar */
+    .topbar { display:flex; justify-content:flex-end; margin-bottom:12px; }
+    .rstbtn {
+      font-family:var(--font); font-size:12px; font-weight:600;
+      padding:6px 14px; background:none;
+      border:1px solid rgba(255,255,255,.1); border-radius:6px;
+      color:var(--muted); cursor:pointer; transition:all .15s;
+    }
+    .rstbtn:hover { border-color:var(--d-br); color:var(--danger); }
 
     /* Grid */
-    .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;animation:fadeU .7s ease .15s both;}
-    @media(max-width:740px){.grid{grid-template-columns:1fr;}}
+    .grid { display:grid; grid-template-columns:1.1fr .9fr; gap:16px; }
+    @media(max-width:700px){ .grid{grid-template-columns:1fr;} }
 
     /* Panel */
-    .panel{background:var(--navy2);border:1px solid rgba(255,255,255,.07);border-radius:var(--r);overflow:hidden;}
-    .ph{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.4rem;border-bottom:1px solid rgba(255,255,255,.06);background:var(--navy3);}
-    .pt{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--white);letter-spacing:.02em;}
-    .pico{width:28px;height:28px;border-radius:var(--rs);background:var(--gold-dim);border:1px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-size:13px;}
-    .pb{padding:1.4rem;}
+    .panel { background:var(--navy2); border:1px solid rgba(255,255,255,.07); border-radius:var(--r); overflow:hidden; }
+    .panel-head {
+      display:flex; align-items:center; gap:10px;
+      padding:1rem 1.35rem;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      background:var(--navy3);
+      font-size:13px; font-weight:700; color:var(--white);
+    }
+    .panel-ico {
+      width:28px; height:28px; border-radius:var(--rs);
+      background:var(--gold-dim); border:1px solid var(--gold-border);
+      display:flex; align-items:center; justify-content:center; font-size:14px;
+    }
+    .panel-body { padding:1.35rem; }
 
     /* Section label */
-    .sl2{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.55rem;margin-top:1.3rem;display:flex;align-items:center;gap:8px;}
-    .sl2:first-child{margin-top:0;}
-    .sl2::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.05);}
+    .slbl {
+      font-size:11px; font-weight:700; letter-spacing:.08em;
+      text-transform:uppercase; color:var(--muted);
+      margin-bottom:.6rem; margin-top:1.3rem;
+      display:flex; align-items:center; gap:8px;
+    }
+    .slbl:first-child { margin-top:0; }
+    .slbl::after { content:''; flex:1; height:1px; background:rgba(255,255,255,.05); }
 
-    /* Fact row */
-    .frow{display:flex;align-items:center;justify-content:space-between;padding:.55rem .85rem;background:var(--navy3);border:1px solid rgba(255,255,255,.06);border-radius:var(--rs);margin-bottom:6px;transition:border-color .2s,background .2s;}
-    .frow:hover{border-color:rgba(255,255,255,.13);background:var(--navy4);}
-    .fname{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--white2);}
-    .tg{display:flex;gap:4px;align-items:center;}
-    .tb{font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:600;padding:4px 11px;border-radius:6px;border:1px solid rgba(255,255,255,.1);cursor:pointer;background:var(--navy4);color:var(--muted);transition:all .15s;}
-    .tb:hover{border-color:rgba(255,255,255,.2);}
-    .tb.ot{background:var(--success-bg);color:var(--success);border-color:var(--success-br);}
-    .tb.of{background:var(--danger-bg);color:var(--danger);border-color:var(--danger-br);}
-    .xb{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:16px;padding:0 4px;transition:color .15s;margin-left:4px;line-height:1;}
-    .xb:hover{color:var(--danger);}
+    /* Fact rows */
+    .frow {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:.6rem 1rem;
+      background:var(--navy3); border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--rs); margin-bottom:6px;
+      transition:border-color .2s, background .2s;
+    }
+    .frow:hover { border-color:rgba(255,255,255,.13); background:var(--navy4); }
 
-    /* Input */
-    .irow{display:flex;gap:8px;margin-top:8px;}
-    input[type=text]{flex:1;font-family:'IBM Plex Mono',monospace;font-size:12px;padding:9px 12px;border:1px solid rgba(255,255,255,.1);border-radius:var(--rs);background:var(--navy3);color:var(--white);outline:none;transition:border-color .2s;}
-    input[type=text]:focus{border-color:var(--gold);background:var(--navy4);}
-    input[type=text]::placeholder{color:var(--muted2);}
-    .btn{font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:600;padding:9px 15px;border-radius:var(--rs);border:1px solid rgba(255,255,255,.1);cursor:pointer;background:var(--navy4);color:var(--white2);transition:all .15s;white-space:nowrap;}
-    .btn:hover{border-color:var(--gold-border);background:var(--gold-dim);color:var(--gold2);}
-    .btn:active{transform:scale(.97);}
+    /* Human-readable label */
+    .fname {
+      font-size:13px; font-weight:600; color:var(--white2);
+    }
+
+    .tgrp { display:flex; gap:5px; align-items:center; }
+    .tbtn {
+      font-family:var(--font); font-size:12px; font-weight:700;
+      padding:5px 14px; border-radius:6px;
+      border:1px solid rgba(255,255,255,.1);
+      cursor:pointer; background:var(--navy4); color:var(--muted);
+      transition:all .15s;
+    }
+    .tbtn:hover { border-color:rgba(255,255,255,.2); }
+    .tbtn.on-t { background:var(--s-bg); color:var(--success); border-color:var(--s-br); }
+    .tbtn.on-f { background:var(--d-bg); color:var(--danger);  border-color:var(--d-br); }
+
+    .xbtn {
+      background:none; border:none; color:var(--muted2);
+      cursor:pointer; font-size:18px; padding:0 3px;
+      transition:color .15s; line-height:1; margin-left:4px;
+    }
+    .xbtn:hover { color:var(--danger); }
+
+    /* Add fact form */
+    .add-fact-form {
+      background:var(--navy3); border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--rs); padding:1rem; margin-top:10px;
+    }
+    .add-fact-form label { font-size:12px; color:var(--muted); display:block; margin-bottom:5px; }
+    .inp {
+      width:100%; font-family:var(--font); font-size:13px;
+      padding:9px 12px;
+      border:1px solid rgba(255,255,255,.1); border-radius:var(--rs);
+      background:var(--navy4); color:var(--white);
+      outline:none; transition:border-color .2s; margin-bottom:8px;
+    }
+    .inp:focus { border-color:var(--gold); }
+    .inp::placeholder { color:var(--muted2); }
+
+    .irow { display:flex; gap:8px; }
+    .btn {
+      font-family:var(--font); font-size:12px; font-weight:700;
+      padding:9px 16px; border-radius:var(--rs);
+      border:1px solid rgba(255,255,255,.1);
+      cursor:pointer; background:var(--navy4); color:var(--white2);
+      transition:all .15s; white-space:nowrap;
+    }
+    .btn:hover { border-color:var(--gold-border); background:var(--gold-dim); color:var(--gold2); }
+    .btn:active { transform:scale(.97); }
+    .btn-full { width:100%; }
 
     /* Rule card */
-    .rcard{border:1px solid rgba(255,255,255,.06);border-radius:var(--rs);background:var(--navy3);margin-bottom:6px;overflow:hidden;transition:border-color .2s;}
-    .rcard:hover{border-color:rgba(255,255,255,.12);}
-    .rh{display:flex;align-items:center;padding:.5rem .85rem;cursor:pointer;gap:8px;}
-    .rnum{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted2);flex-shrink:0;min-width:16px;}
-    .rtxt{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-    .rbadge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;flex-shrink:0;letter-spacing:.06em;}
-    .rba{background:var(--success-bg);color:var(--success);border:1px solid var(--success-br);}
-    .rbr{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-br);}
-    .rbo{background:var(--info-bg);color:var(--info);border:1px solid var(--info-br);}
-    .redit{display:none;padding:0 .85rem .6rem;}
-    .redit.open{display:block;}
-    textarea{width:100%;font-family:'IBM Plex Mono',monospace;font-size:11px;padding:7px 10px;border:1px solid rgba(255,255,255,.1);border-radius:var(--rs);background:var(--navy);color:var(--white2);resize:none;outline:none;line-height:1.6;}
-    textarea:focus{border-color:var(--gold);}
+    .rcard {
+      border:1px solid rgba(255,255,255,.06); border-radius:var(--rs);
+      background:var(--navy3); margin-bottom:8px; overflow:hidden;
+      transition:border-color .2s;
+    }
+    .rcard:hover { border-color:rgba(255,255,255,.13); }
+    .rhead { display:flex; align-items:flex-start; padding:.75rem 1rem; gap:10px; }
+    .rnum {
+      font-size:11px; font-weight:700; color:var(--gold);
+      flex-shrink:0; min-width:20px; padding-top:1px;
+    }
+    .rinfo { flex:1; }
 
-    /* Eval btn */
-    .ebtn{width:100%;margin-top:1.4rem;padding:13px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;background:linear-gradient(135deg,#d4a94e 0%,#a8742d 100%);color:var(--navy);border:none;border-radius:var(--rs);cursor:pointer;letter-spacing:.03em;transition:opacity .2s,transform .1s,box-shadow .2s;box-shadow:0 4px 22px rgba(201,168,76,.28);position:relative;overflow:hidden;}
-    .ebtn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.18) 0%,transparent 55%);}
-    .ebtn:hover{opacity:.9;box-shadow:0 6px 30px rgba(201,168,76,.42);}
-    .ebtn:active{transform:scale(.98);}
+    /* Human-readable rule display */
+    .r-human {
+      font-size:13px; font-weight:600; color:var(--white2);
+      line-height:1.5; margin-bottom:4px;
+    }
+    .r-human .kw-if   { color:var(--info); }
+    .r-human .kw-and  { color:var(--muted); font-size:11px; font-weight:700; }
+    .r-human .kw-not  { color:var(--danger); font-size:11px; font-weight:700; }
+    .r-human .kw-then { color:var(--gold); font-size:11px; font-weight:700; }
+    .r-human .cond    { color:var(--white); }
+    .r-human .outcome { color:var(--gold2); }
 
-    .rstbtn{font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:600;padding:5px 13px;background:none;border:1px solid rgba(255,255,255,.1);border-radius:6px;color:var(--muted);cursor:pointer;transition:all .15s;}
-    .rstbtn:hover{border-color:var(--danger-br);color:var(--danger);}
+    .rbadge {
+      font-size:9px; font-weight:800; padding:3px 9px;
+      border-radius:4px; flex-shrink:0; letter-spacing:.06em;
+      margin-top:2px;
+    }
+    .rb-a { background:var(--s-bg); color:var(--success); border:1px solid var(--s-br); }
+    .rb-r { background:var(--d-bg); color:var(--danger);  border:1px solid var(--d-br); }
+    .rb-o { background:var(--i-bg); color:var(--info);    border:1px solid var(--i-br); }
+
+    /* Add rule form */
+    .add-rule-form {
+      background:var(--navy3); border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--rs); padding:1rem; margin-top:10px;
+    }
+    .add-rule-form label { font-size:12px; color:var(--muted); display:block; margin-bottom:5px; }
+    select {
+      width:100%; font-family:var(--font); font-size:13px;
+      padding:9px 12px;
+      border:1px solid rgba(255,255,255,.1); border-radius:var(--rs);
+      background:var(--navy4); color:var(--white);
+      outline:none; margin-bottom:8px; cursor:pointer;
+    }
+    select:focus { border-color:var(--gold); }
+    select option { background:var(--navy3); }
+
+    /* Eval button */
+    .eval-btn {
+      width:100%; margin-top:1.35rem; padding:14px;
+      font-family:var(--font); font-size:15px; font-weight:800;
+      background:linear-gradient(135deg, #d4a94e 0%, #a8742d 100%);
+      color:#0f1b2d; border:none; border-radius:var(--rs);
+      cursor:pointer; letter-spacing:.03em;
+      box-shadow:0 4px 22px rgba(201,168,76,.28);
+      transition:opacity .2s, transform .1s, box-shadow .2s;
+    }
+    .eval-btn:hover { opacity:.9; box-shadow:0 6px 30px rgba(201,168,76,.42); }
+    .eval-btn:active { transform:scale(.98); }
 
     /* Output */
-    .empty{color:var(--muted2);font-size:13px;text-align:center;padding:3.5rem 1rem;line-height:1.85;}
-    .eico{font-size:40px;display:block;margin-bottom:1rem;opacity:.35;}
+    .empty { color:var(--muted2); font-size:14px; text-align:center; padding:3rem 1rem; line-height:1.85; }
+    .empty-ico { font-size:40px; display:block; margin-bottom:1rem; opacity:.35; }
 
     /* Verdict */
-    .verdict{border-radius:var(--rs);padding:1.2rem 1.25rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:14px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1) both;}
-    .va{background:var(--success-bg);border:1px solid var(--success-br);}
-    .vr{background:var(--danger-bg);border:1px solid var(--danger-br);}
-    .vn{background:var(--warn-bg);border:1px solid rgba(224,168,76,.3);}
-    .vico{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;flex-shrink:0;}
-    .va .vico{background:rgba(76,175,135,.2);color:var(--success);}
-    .vr .vico{background:rgba(224,92,92,.2);color:var(--danger);}
-    .vn .vico{background:var(--warn-bg);color:var(--warn);}
-    .vlbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.7;margin-bottom:2px;}
-    .va .vlbl{color:var(--success);}
-    .vr .vlbl{color:var(--danger);}
-    .vn .vlbl{color:var(--warn);}
-    .vdec{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;}
-    .va .vdec{color:var(--success);}
-    .vr .vdec{color:var(--danger);}
-    .vn .vdec{color:var(--warn);}
+    .verdict {
+      border-radius:var(--rs); padding:1.2rem 1.25rem;
+      margin-bottom:1.2rem;
+      display:flex; align-items:center; gap:14px;
+    }
+    .v-a { background:var(--s-bg); border:1px solid var(--s-br); }
+    .v-r { background:var(--d-bg); border:1px solid var(--d-br); }
+    .v-n { background:var(--w-bg); border:1px solid var(--w-br); }
+    .v-ico {
+      width:48px; height:48px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:24px; font-weight:900; flex-shrink:0;
+    }
+    .v-a .v-ico { background:rgba(76,175,135,.2); color:var(--success); }
+    .v-r .v-ico { background:rgba(224,92,92,.2);  color:var(--danger); }
+    .v-n .v-ico { background:var(--w-bg);         color:var(--warn); }
+    .v-lbl { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; opacity:.7; margin-bottom:4px; }
+    .v-a .v-lbl { color:var(--success); }
+    .v-r .v-lbl { color:var(--danger); }
+    .v-n .v-lbl { color:var(--warn); }
+    .v-dec { font-size:22px; font-weight:800; }
+    .v-a .v-dec { color:var(--success); }
+    .v-r .v-dec { color:var(--danger); }
+    .v-n .v-dec { color:var(--warn); }
 
     /* Pills */
-    .pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1rem;}
-    .pill{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:3px 10px;border-radius:99px;border:1px solid;}
-    .pt2{background:var(--success-bg);color:var(--success);border-color:var(--success-br);}
-    .pf2{background:var(--danger-bg);color:var(--danger);border-color:var(--danger-br);}
-    .pd2{background:var(--info-bg);color:var(--info);border-color:var(--info-br);}
+    .pills { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:1rem; }
+    .pill {
+      font-size:12px; font-weight:600; padding:4px 12px;
+      border-radius:99px; border:1px solid;
+    }
+    .p-t { background:var(--s-bg); color:var(--success); border-color:var(--s-br); }
+    .p-f { background:var(--d-bg); color:var(--danger);  border-color:var(--d-br); }
+    .p-d { background:var(--i-bg); color:var(--info);    border-color:var(--i-br); }
 
     /* Trace */
-    .tbox{background:var(--navy);border:1px solid rgba(255,255,255,.06);border-radius:var(--rs);padding:.75rem;margin-bottom:1rem;}
-    .ti{display:flex;align-items:flex-start;gap:9px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);line-height:1.5;}
-    .ti:last-child{border-bottom:none;}
-    .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px;}
-    .dh{background:var(--success);box-shadow:0 0 7px rgba(76,175,135,.55);}
-    .di{background:var(--muted2);}
-
-    /* Help note */
-    .hnote{font-size:11px;color:var(--muted2);margin-top:6px;line-height:1.6;padding:8px 10px;background:var(--navy);border-radius:6px;border:1px solid rgba(255,255,255,.05);font-family:'IBM Plex Mono',monospace;}
+    .tbox {
+      background:var(--navy); border:1px solid rgba(255,255,255,.06);
+      border-radius:var(--rs); padding:.85rem; margin-bottom:1rem;
+    }
+    .titem {
+      display:flex; align-items:flex-start; gap:10px;
+      padding:6px 0; border-bottom:1px solid rgba(255,255,255,.04);
+      font-size:13px; color:var(--muted); line-height:1.55;
+    }
+    .titem:last-child { border-bottom:none; }
+    .dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+    .d-h { background:var(--success); box-shadow:0 0 7px rgba(76,175,135,.5); }
+    .d-i { background:var(--muted2); }
 
     /* Footer */
-    .footer{text-align:center;margin-top:2.5rem;font-size:12px;color:var(--muted2);animation:fadeU .7s ease .3s both;display:flex;align-items:center;justify-content:center;gap:10px;}
-    .fsep{opacity:.25;}
+    .footer {
+      text-align:center; margin-top:2rem;
+      font-size:12px; color:var(--muted2);
+      display:flex; align-items:center; justify-content:center; gap:10px;
+    }
+    .fsep { opacity:.25; }
 
-    @keyframes fadeD{from{opacity:0;transform:translateY(-14px);}to{opacity:1;transform:translateY(0);}}
-    @keyframes fadeU{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
-    @keyframes popIn{from{opacity:0;transform:scale(.92);}to{opacity:1;transform:scale(1);}}
-    ::-webkit-scrollbar{width:5px;}
-    ::-webkit-scrollbar-track{background:var(--navy);}
-    ::-webkit-scrollbar-thumb{background:var(--navy4);border-radius:99px;}
+    ::-webkit-scrollbar { width:5px; }
+    ::-webkit-scrollbar-track { background:var(--navy); }
+    ::-webkit-scrollbar-thumb { background:var(--navy4); border-radius:99px; }
   </style>
 </head>
 <body>
 <div class="page">
 
+  <!-- Header -->
   <div class="hdr">
-    <div class="hdr-tag">Propositional Logic · Forward Chaining</div>
-    <h1>Insurance Claim<br><em>Decision System</em></h1>
-    <p>A rule-based AI inference engine that evaluates insurance claims using logical conditions and automated reasoning.</p>
+    <div class="badge"><span class="badge-dot"></span>Propositional Logic · Forward Chaining</div>
+    <h1>Insurance Claim <span>Decision System</span></h1>
+    <p>Enter the claim details and rules below. The system will automatically evaluate and give a final decision.</p>
   </div>
 
+  <!-- Stats -->
   <div class="stats">
-    <div class="stat"><span class="sn" id="sf">5</span><span class="sl">Facts</span></div>
-    <div class="ssep"></div>
-    <div class="stat"><span class="sn" id="sr">6</span><span class="sl">Rules</span></div>
-    <div class="ssep"></div>
-    <div class="stat"><span class="sn" id="sd">—</span><span class="sl">Decision</span></div>
+    <div class="stat"><span class="stat-n" id="sf">5</span><span class="stat-l">Facts</span></div>
+    <div class="stat-sep"></div>
+    <div class="stat"><span class="stat-n" id="sr">6</span><span class="stat-l">Rules</span></div>
+    <div class="stat-sep"></div>
+    <div class="stat"><span class="stat-n" id="sd">—</span><span class="stat-l">Decision</span></div>
   </div>
 
-  <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
-    <button class="rstbtn" onclick="resetAll()">↺ Reset defaults</button>
+  <div class="topbar">
+    <button class="rstbtn" onclick="resetAll()">↺ Reset Defaults</button>
   </div>
 
   <div class="grid">
 
     <!-- LEFT -->
     <div class="panel">
-      <div class="ph">
-        <div class="pt"><span class="pico">📋</span>Facts &amp; Inference Rules</div>
+      <div class="panel-head">
+        <span class="panel-ico">📋</span> Claim Details &amp; Rules
       </div>
-      <div class="pb">
-        <div class="sl2">Claim Facts</div>
+      <div class="panel-body">
+
+        <!-- FACTS -->
+        <div class="slbl">Claim Facts</div>
         <div id="facts-list"></div>
-        <div class="irow">
-          <input type="text" id="nf" placeholder="e.g. theft_case" />
-          <button class="btn" onclick="addFact()">+ Add Fact</button>
+
+        <!-- Add fact form -->
+        <div class="add-fact-form">
+          <label>Add a new fact:</label>
+          <input class="inp" id="nf-label" placeholder="e.g. Vehicle Damaged" />
+          <div class="irow">
+            <select id="nf-val">
+              <option value="true">Yes / True</option>
+              <option value="false">No / False</option>
+            </select>
+            <button class="btn" onclick="addFact()">+ Add Fact</button>
+          </div>
         </div>
 
-        <div class="sl2" style="margin-top:1.4rem;">Inference Rules</div>
-        <div class="hnote">IF condition AND NOT condition THEN outcome</div>
-        <div id="rules-list" style="margin-top:8px;"></div>
-        <div class="irow">
-          <input type="text" id="nr" placeholder="IF policy_active AND documents_valid THEN approve_claim" />
+        <!-- RULES -->
+        <div class="slbl" style="margin-top:1.5rem;">Inference Rules</div>
+        <div id="rules-list"></div>
+
+        <!-- Add rule form -->
+        <div class="add-rule-form">
+          <label>Add a new rule — pick conditions and outcome:</label>
+          <select id="nr-if" style="margin-bottom:8px;">
+            <option value="">— Select first condition —</option>
+          </select>
+          <select id="nr-and" style="margin-bottom:8px;">
+            <option value="">— (Optional) AND condition —</option>
+          </select>
+          <select id="nr-then" style="margin-bottom:8px;">
+            <option value="approve_claim">→ Approve the Claim</option>
+            <option value="reject_claim">→ Reject the Claim</option>
+          </select>
+          <button class="btn btn-full" onclick="addRule()">+ Add Rule</button>
         </div>
-        <div class="irow"><button class="btn" style="width:100%;" onclick="addRule()">+ Add Rule</button></div>
-        <button class="ebtn" onclick="runInference()">⚡ Evaluate Claim</button>
+
+        <button class="eval-btn" onclick="runInference()">⚡ Evaluate Claim</button>
       </div>
     </div>
 
     <!-- RIGHT -->
     <div class="panel">
-      <div class="ph">
-        <div class="pt"><span class="pico">📊</span>Decision Output</div>
+      <div class="panel-head">
+        <span class="panel-ico">📊</span> Decision Output
       </div>
-      <div class="pb">
+      <div class="panel-body">
         <div id="out">
           <div class="empty">
-            <span class="eico">⚖️</span>
-            Configure facts and rules on the left,<br>then click <strong>Evaluate Claim</strong>.
+            <span class="empty-ico">⚖️</span>
+            Fill in the claim details on the left,<br>
+            then click <strong>Evaluate Claim</strong><br>
+            to get the final decision.
           </div>
         </div>
       </div>
@@ -216,146 +396,274 @@
   </div>
 
   <div class="footer">
-    <span>AI_ProblemSolving_</span><span class="fsep">·</span>
-    <span>Rule-Based Insurance Claim Decision System</span><span class="fsep">·</span>
+    <span>AI_ProblemSolving_</span>
+    <span class="fsep">·</span>
+    <span>Rule-Based Insurance Claim Decision System</span>
+    <span class="fsep">·</span>
     <span>Propositional Logic</span>
   </div>
 </div>
 
 <script>
-const DF=[
-  {name:"policy_active",value:true},
-  {name:"documents_valid",value:true},
-  {name:"accident_reported",value:true},
-  {name:"premium_paid",value:false},
-  {name:"fraud_detected",value:false},
-];
-const DR=[
-  "IF policy_active AND documents_valid THEN approve_claim",
-  "IF accident_reported AND NOT fraud_detected THEN accident_valid",
-  "IF accident_valid AND approve_claim THEN final_approve",
-  "IF fraud_detected THEN reject_claim",
-  "IF NOT premium_paid THEN reject_claim",
-  "IF NOT policy_active THEN reject_claim",
-];
-let facts=DF.map(f=>({...f}));
-let rules=[...DR];
+  /* Internal key → Human readable label */
+  var LABELS = {
+    "policy_active":     "Policy is Active",
+    "documents_valid":   "Documents are Valid",
+    "accident_reported": "Accident is Reported",
+    "premium_paid":      "Premium has been Paid",
+    "fraud_detected":    "Fraud Detected",
+    "approve_claim":     "Approve the Claim",
+    "reject_claim":      "Reject the Claim",
+    "accident_valid":    "Accident is Valid",
+    "final_approve":     "Final Approval Granted"
+  };
 
-function upd(){document.getElementById('sf').textContent=facts.length;document.getElementById('sr').textContent=rules.length;}
+  function toKey(label) {
+    return label.trim().toLowerCase().replace(/[^a-z0-9]+/g,'_');
+  }
 
-function renderFacts(){
-  const el=document.getElementById('facts-list');el.innerHTML='';
-  facts.forEach((f,i)=>{
-    const d=document.createElement('div');d.className='frow';
-    d.innerHTML=`<span class="fname">${f.name}</span><div class="tg">
-      <button class="tb ${f.value?'ot':''}" onclick="sf2(${i},true)">True</button>
-      <button class="tb ${!f.value?'of':''}" onclick="sf2(${i},false)">False</button>
-      <button class="xb" onclick="df(${i})">×</button></div>`;
-    el.appendChild(d);
-  });upd();
-}
+  function toLabel(key) {
+    if(LABELS[key]) return LABELS[key];
+    return key.replace(/_/g,' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+  }
 
-function renderRules(){
-  const el=document.getElementById('rules-list');el.innerHTML='';
-  rules.forEach((r,i)=>{
-    const p=pr(r);let cls='rbo',lbl='RULE';
-    if(p){
-      if(p.o.includes('reject')){cls='rbr';lbl='REJECT';}
-      else if(p.o.includes('approve')||p.o.includes('final')){cls='rba';lbl='APPROVE';}
-      else{lbl=p.o.replace(/_/g,' ').toUpperCase().slice(0,10);}
+  var DF = [
+    {key:"policy_active",     value:true},
+    {key:"documents_valid",   value:true},
+    {key:"accident_reported", value:true},
+    {key:"premium_paid",      value:false},
+    {key:"fraud_detected",    value:false}
+  ];
+
+  /* Rules stored as objects */
+  var DR = [
+    {if1:"policy_active",     not1:false, if2:"documents_valid",   not2:false, then:"approve_claim"},
+    {if1:"accident_reported", not1:false, if2:"fraud_detected",    not2:true,  then:"accident_valid"},
+    {if1:"accident_valid",    not1:false, if2:"approve_claim",     not2:false, then:"final_approve"},
+    {if1:"fraud_detected",    not1:false, if2:"",                  not2:false, then:"reject_claim"},
+    {if1:"premium_paid",      not1:true,  if2:"",                  not2:false, then:"reject_claim"},
+    {if1:"policy_active",     not1:true,  if2:"",                  not2:false, then:"reject_claim"}
+  ];
+
+  var facts = DF.map(function(f){ return {key:f.key, value:f.value}; });
+  var rules = DR.map(function(r){ return {if1:r.if1, not1:r.not1, if2:r.if2, not2:r.not2, then:r.then}; });
+
+  function updStats(){
+    document.getElementById('sf').textContent = facts.length;
+    document.getElementById('sr').textContent = rules.length;
+  }
+
+  function getFactKeys(){
+    return facts.map(function(f){ return f.key; });
+  }
+
+  function renderFacts(){
+    var el = document.getElementById('facts-list');
+    el.innerHTML = '';
+    facts.forEach(function(f, i){
+      var d = document.createElement('div');
+      d.className = 'frow';
+      d.innerHTML =
+        '<span class="fname">'+toLabel(f.key)+'</span>'+
+        '<div class="tgrp">'+
+          '<button class="tbtn '+(f.value?'on-t':'')+'" onclick="setF('+i+',true)">Yes</button>'+
+          '<button class="tbtn '+(!f.value?'on-f':'')+'" onclick="setF('+i+',false)">No</button>'+
+          '<button class="xbtn" onclick="delF('+i+')">×</button>'+
+        '</div>';
+      el.appendChild(d);
+    });
+    updStats();
+    refreshRuleDropdowns();
+  }
+
+  function ruleToHuman(r){
+    var parts = [];
+    var neg1 = r.not1 ? '<span class="kw-not">NOT</span> ' : '';
+    parts.push(neg1+'<span class="cond">'+toLabel(r.if1)+'</span>');
+    if(r.if2){
+      var neg2 = r.not2 ? '<span class="kw-not">NOT</span> ' : '';
+      parts.push('<span class="kw-and">AND</span> '+neg2+'<span class="cond">'+toLabel(r.if2)+'</span>');
     }
-    const d=document.createElement('div');d.className='rcard';
-    d.innerHTML=`<div class="rh" onclick="te(${i})">
-      <span class="rnum">${i+1}</span>
-      <span class="rtxt">${r}</span>
-      <span class="rbadge ${cls}">${lbl}</span>
-      <button class="xb" onclick="event.stopPropagation();dr(${i})">×</button></div>
-      <div class="redit" id="re${i}"><textarea rows="2" onchange="ur(${i},this.value)">${r}</textarea></div>`;
-    el.appendChild(d);
-  });upd();
-}
+    var thenPart = '<span class="kw-then">THEN</span> <span class="outcome">'+toLabel(r.then)+'</span>';
+    return '<span class="kw-if">IF</span> '+parts.join(' ')+' '+thenPart;
+  }
 
-function te(i){document.getElementById('re'+i).classList.toggle('open');}
-function pr(s){
-  const m=s.match(/^IF\s+(.+?)\s+THEN\s+(.+)$/i);if(!m)return null;
-  const o=m[2].trim().toLowerCase().replace(/\s+/g,'_');
-  const c=m[1].split(/\s+AND\s+/i).map(p=>{
-    p=p.trim();const neg=/^NOT\s+/i.test(p);
-    return{name:p.replace(/^NOT\s+/i,'').trim().toLowerCase().replace(/\s+/g,'_'),negated:neg};
-  });
-  return{c,o};
-}
-function sf2(i,v){facts[i].value=v;renderFacts();}
-function df(i){facts.splice(i,1);renderFacts();}
-function dr(i){rules.splice(i,1);renderRules();}
-function ur(i,v){rules[i]=v.trim();}
-function flash(el){el.style.borderColor='var(--danger)';setTimeout(()=>el.style.borderColor='',700);}
+  function renderRules(){
+    var el = document.getElementById('rules-list');
+    el.innerHTML = '';
+    rules.forEach(function(r, i){
+      var cls = 'rb-o', lbl = 'RULE';
+      if(r.then.indexOf('reject') !== -1){ cls='rb-r'; lbl='REJECT'; }
+      else if(r.then.indexOf('approve') !== -1 || r.then.indexOf('final') !== -1){ cls='rb-a'; lbl='APPROVE'; }
+      var d = document.createElement('div');
+      d.className = 'rcard';
+      d.innerHTML =
+        '<div class="rhead">'+
+          '<span class="rnum">'+(i+1)+'</span>'+
+          '<div class="rinfo">'+
+            '<div class="r-human">'+ruleToHuman(r)+'</div>'+
+          '</div>'+
+          '<span class="rbadge '+cls+'">'+lbl+'</span>'+
+          '<button class="xbtn" onclick="delR('+i+')">×</button>'+
+        '</div>';
+      el.appendChild(d);
+    });
+    updStats();
+  }
 
-function addFact(){
-  const inp=document.getElementById('nf');
-  const name=inp.value.trim().toLowerCase().replace(/\s+/g,'_');
-  if(!name||facts.find(f=>f.name===name)){flash(inp);return;}
-  facts.push({name,value:false});inp.value='';renderFacts();
-}
-function addRule(){
-  const inp=document.getElementById('nr');
-  const val=inp.value.trim();
-  if(!val||!pr(val)){flash(inp);return;}
-  rules.push(val);inp.value='';renderRules();
-}
+  function refreshRuleDropdowns(){
+    var keys = getFactKeys();
+    var selIf  = document.getElementById('nr-if');
+    var selAnd = document.getElementById('nr-and');
+    var prevIf  = selIf.value;
+    var prevAnd = selAnd.value;
 
-function runInference(){
-  const kb={};
-  facts.forEach(f=>{kb[f.name]=f.value;});
-  const trace=[];let changed=true,it=0;
-  while(changed&&it<20){changed=false;it++;
-    rules.forEach((rs,idx)=>{
-      const p=pr(rs);if(!p)return;
-      if(kb[p.o]===true)return;
-      const ok=p.c.every(c=>c.negated?!kb[c.name]:!!kb[c.name]);
-      if(ok){kb[p.o]=true;changed=true;
-        const cs=p.c.map(c=>(c.negated?'NOT ':'')+c.name).join(' AND ');
-        trace.push({h:true,m:`Rule ${idx+1}: ${cs} → ${p.o} = TRUE`});
+    selIf.innerHTML  = '<option value="">— Select first condition —</option>';
+    selAnd.innerHTML = '<option value="">— (Optional) AND condition —</option>';
+
+    keys.forEach(function(k){
+      var lbl = toLabel(k);
+      selIf.innerHTML  += '<option value="'+k+'">'+lbl+'</option>';
+      selIf.innerHTML  += '<option value="NOT_'+k+'">NOT — '+lbl+'</option>';
+      selAnd.innerHTML += '<option value="'+k+'">'+lbl+'</option>';
+      selAnd.innerHTML += '<option value="NOT_'+k+'">NOT — '+lbl+'</option>';
+    });
+
+    selIf.value  = prevIf;
+    selAnd.value = prevAnd;
+  }
+
+  function setF(i,v){ facts[i].value=v; renderFacts(); }
+  function delF(i){ facts.splice(i,1); renderFacts(); }
+  function delR(i){ rules.splice(i,1); renderRules(); }
+
+  function flash(el){ el.style.borderColor='#e05c5c'; setTimeout(function(){ el.style.borderColor=''; },700); }
+
+  function addFact(){
+    var labelInp = document.getElementById('nf-label');
+    var valSel   = document.getElementById('nf-val');
+    var label = labelInp.value.trim();
+    if(!label){ flash(labelInp); return; }
+    var key = toKey(label);
+    for(var i=0;i<facts.length;i++){ if(facts[i].key===key){ flash(labelInp); return; } }
+    LABELS[key] = label; // store the human label
+    facts.push({key:key, value: valSel.value === 'true'});
+    labelInp.value = '';
+    renderFacts();
+  }
+
+  function addRule(){
+    var ifSel   = document.getElementById('nr-if');
+    var andSel  = document.getElementById('nr-and');
+    var thenSel = document.getElementById('nr-then');
+
+    var ifVal = ifSel.value;
+    if(!ifVal){ flash(ifSel); return; }
+
+    var not1 = ifVal.indexOf('NOT_') === 0;
+    var if1  = not1 ? ifVal.slice(4) : ifVal;
+
+    var andVal = andSel.value;
+    var not2 = andVal.indexOf('NOT_') === 0;
+    var if2  = andVal ? (not2 ? andVal.slice(4) : andVal) : '';
+
+    rules.push({if1:if1, not1:not1, if2:if2, not2:not2, then:thenSel.value});
+    renderRules();
+  }
+
+  function runInference(){
+    var kb = {};
+    facts.forEach(function(f){ kb[f.key] = f.value; });
+
+    var trace = [], changed = true, it = 0;
+    while(changed && it < 20){
+      changed = false; it++;
+      rules.forEach(function(r, idx){
+        if(kb[r.then] === true) return;
+        var c1 = r.not1 ? !kb[r.if1] : !!kb[r.if1];
+        var c2 = true;
+        if(r.if2){ c2 = r.not2 ? !kb[r.if2] : !!kb[r.if2]; }
+        if(c1 && c2){
+          kb[r.then] = true; changed = true;
+          var desc =
+            'Rule '+(idx+1)+': "'+toLabel(r.if1)+'" is '+(r.not1?'False':'True')+
+            (r.if2 ? ' AND "'+toLabel(r.if2)+'" is '+(r.not2?'False':'True') : '')+
+            ' → '+toLabel(r.then);
+          trace.push({h:true, m:desc});
+        }
+      });
+    }
+
+    var rej = kb['reject_claim'];
+    var app = kb['final_approve'] || kb['approve_claim'];
+    var vc,vi,vd,vs;
+    if(rej){ vc='v-r'; vi='✕'; vd='Claim Rejected'; vs='Rejected'; }
+    else if(app){ vc='v-a'; vi='✓'; vd='Claim Approved'; vs='Approved'; }
+    else{ vc='v-n'; vi='?'; vd='No Decision Reached'; vs='Pending'; }
+    document.getElementById('sd').textContent = vs;
+
+    var fp = '';
+    facts.forEach(function(f){
+      fp += '<span class="pill '+(f.value?'p-t':'p-f')+'">'+
+            toLabel(f.key)+' — '+(f.value?'Yes':'No')+'</span>';
+    });
+
+    var dv = '';
+    Object.keys(kb).forEach(function(k){
+      if(kb[k]){
+        var found=false;
+        for(var i=0;i<facts.length;i++){ if(facts[i].key===k){ found=true; break; } }
+        if(!found) dv += '<span class="pill p-d">'+toLabel(k)+' — Derived</span>';
       }
     });
+
+    var th = '';
+    if(trace.length){
+      trace.forEach(function(t){
+        th += '<div class="titem"><span class="dot '+(t.h?'d-h':'d-i')+'"></span><span>'+t.m+'</span></div>';
+      });
+    } else {
+      th = '<div class="titem"><span class="dot d-i"></span><span>No rules were triggered.</span></div>';
+    }
+
+    var rh = '';
+    rules.forEach(function(r,i){
+      rh += '<div class="titem"><span class="dot d-i"></span><span>Rule '+(i+1)+': '+
+            (r.not1?'NOT ':'')+toLabel(r.if1)+
+            (r.if2 ? ' AND '+(r.not2?'NOT ':'')+toLabel(r.if2) : '')+
+            ' → '+toLabel(r.then)+'</span></div>';
+    });
+
+    document.getElementById('out').innerHTML =
+      '<div class="verdict '+vc+'">'+
+        '<div class="v-ico">'+vi+'</div>'+
+        '<div><div class="v-lbl">Final Decision</div><div class="v-dec">'+vd+'</div></div>'+
+      '</div>'+
+
+      '<div class="slbl" style="margin-top:0;">Facts Provided</div>'+
+      '<div class="pills">'+fp+'</div>'+
+
+      (dv ? '<div class="slbl">Derived Conclusions</div><div class="pills">'+dv+'</div>' : '')+
+
+      '<div class="slbl">How the Decision Was Made</div>'+
+      '<div class="tbox">'+th+'</div>'+
+
+      '<div class="slbl">All Rules Used</div>'+
+      '<div class="tbox">'+rh+'</div>';
   }
-  const rej=kb['reject_claim'],app=kb['final_approve']||kb['approve_claim'];
-  let vc,vi,vl,vd,vs;
-  if(rej){vc='vr';vi='✕';vl='Decision';vd='Claim Rejected';vs='Rejected';}
-  else if(app){vc='va';vi='✓';vl='Decision';vd='Claim Approved';vs='Approved';}
-  else{vc='vn';vi='?';vl='Decision';vd='No Decision Reached';vs='Pending';}
-  document.getElementById('sd').textContent=vs;
 
-  const fp=facts.map(f=>`<span class="pill ${f.value?'pt2':'pf2'}">${f.name} = ${f.value}</span>`).join('');
-  const dv=Object.entries(kb).filter(([k,v])=>v&&!facts.find(f=>f.name===k)).map(([k])=>`<span class="pill pd2">${k} = TRUE</span>`).join('');
-  const th=trace.length?trace.map(t=>`<div class="ti"><span class="dot ${t.h?'dh':'di'}"></span><span>${t.m}</span></div>`).join('')
-    :`<div class="ti"><span class="dot di"></span><span>No rules fired.</span></div>`;
-  const rh=rules.map((r,i)=>`<div class="ti"><span class="dot di"></span><span>${i+1}. ${r}</span></div>`).join('');
+  function resetAll(){
+    facts = DF.map(function(f){ return {key:f.key, value:f.value}; });
+    rules = DR.map(function(r){ return {if1:r.if1,not1:r.not1,if2:r.if2,not2:r.not2,then:r.then}; });
+    renderFacts(); renderRules();
+    document.getElementById('sd').textContent = '—';
+    document.getElementById('out').innerHTML =
+      '<div class="empty"><span class="empty-ico">⚖️</span>Fill in the claim details on the left,<br>then click <strong>Evaluate Claim</strong><br>to get the final decision.</div>';
+  }
 
-  document.getElementById('out').innerHTML=`
-    <div class="verdict ${vc}">
-      <div class="vico">${vi}</div>
-      <div><div class="vlbl">${vl}</div><div class="vdec">${vd}</div></div>
-    </div>
-    <div class="sl2" style="margin-top:0;">Input Facts</div>
-    <div class="pills">${fp}</div>
-    ${dv?`<div class="sl2">Derived Facts</div><div class="pills">${dv}</div>`:''}
-    <div class="sl2">Inference Trace</div>
-    <div class="tbox">${th}</div>
-    <div class="sl2">Rules Evaluated</div>
-    <div class="tbox">${rh}</div>`;
-}
-
-function resetAll(){
-  facts=DF.map(f=>({...f}));rules=[...DR];
-  renderFacts();renderRules();
-  document.getElementById('sd').textContent='—';
-  document.getElementById('out').innerHTML=`<div class="empty"><span class="eico">⚖️</span>Configure facts and rules on the left,<br>then click <strong>Evaluate Claim</strong>.</div>`;
-}
-
-document.getElementById('nf').addEventListener('keydown',e=>{if(e.key==='Enter')addFact();});
-document.getElementById('nr').addEventListener('keydown',e=>{if(e.key==='Enter')addRule();});
-renderFacts();renderRules();
+  renderFacts();
+  renderRules();
+  refreshRuleDropdowns();
 </script>
 </body>
 </html>
